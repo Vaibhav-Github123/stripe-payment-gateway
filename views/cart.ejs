@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+  <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script> -->
+  <script src="https://js.stripe.com/v3/"></script>
+
+  <style>
+    *{margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-webkit-text-shadow: rgba(0,0,0,.01) 0 0 1px;text-shadow: rgba(0,0,0,.01) 0 0 1px}body{font-family: 'Rubik', sans-serif;font-size: 14px;font-weight: 400;background: #E0E0E0;color: #000000}ul{list-style: none;margin-bottom: 0px}.button{display: inline-block;background: #0e8ce4;border-radius: 5px;height: 48px;-webkit-transition: all 200ms ease;-moz-transition: all 200ms ease;-ms-transition: all 200ms ease;-o-transition: all 200ms ease;transition: all 200ms ease}.button a{display: block;font-size: 18px;font-weight: 400;line-height: 48px;color: #FFFFFF;padding-left: 35px;padding-right: 35px}.button:hover{opacity: 0.8}.cart_section{width: 100%;padding-top: 93px;padding-bottom: 111px}.cart_title{font-size: 30px;font-weight: 500}.cart_items{margin-top: 8px}.cart_list{border: solid 1px #e8e8e8;box-shadow: 0px 1px 5px rgba(0,0,0,0.1);background-color: #fff}.cart_item{width: 100%;padding: 15px;padding-right: 46px}.cart_item_image{width: 133px;height: 133px;float: left}.cart_item_image img{max-width: 100%}.cart_item_info{width: calc(100% - 133px);float: left;padding-top: 18px}.cart_item_name{margin-left: 7.53%}.cart_item_title{font-size: 14px;font-weight: 400;color: rgba(0,0,0,0.5)}.cart_item_text{font-size: 18px;margin-top: 35px}.cart_item_text span{display: inline-block;width: 20px;height: 20px;border-radius: 50%;margin-right: 11px;-webkit-transform: translateY(4px);-moz-transform: translateY(4px);-ms-transform: translateY(4px);-o-transform: translateY(4px);transform: translateY(4px)}.cart_item_price{text-align: right}.cart_item_total{text-align: right}.order_total{width: 100%;height: 60px;margin-top: 30px;border: solid 1px #e8e8e8;box-shadow: 0px 1px 5px rgba(0,0,0,0.1);padding-right: 46px;padding-left: 15px;background-color: #fff}.order_total_title{display: inline-block;font-size: 14px;color: rgba(0,0,0,0.5);line-height: 60px}.order_total_amount{display: inline-block;font-size: 18px;font-weight: 500;margin-left: 26px;line-height: 60px}.cart_buttons{margin-top: 60px;text-align: right}.cart_button_clear{display: inline-block;border: none;font-size: 18px;font-weight: 400;line-height: 48px;color: rgba(0,0,0,0.5);background: #FFFFFF;border: solid 1px #b2b2b2;padding-left: 35px;padding-right: 35px;outline: none;cursor: pointer;margin-right: 26px}.cart_button_clear:hover{border-color: #0e8ce4;color: #0e8ce4}.cart_button_checkout{display: inline-block;border: none;font-size: 18px;font-weight: 400;line-height: 48px;color: #FFFFFF;padding-left: 35px;padding-right: 35px;outline: none;cursor: pointer;vertical-align: top}
+    .order_total_content, .checkout_btn{
+      text-align: end;
+    }
+    .form-control-sm {
+    min-height: calc(1.5em + (0.5rem + 2px));
+    padding: .25rem -1.5rem;
+    font-size: 0.875rem;
+    border-radius: -0.8rem;
+}
+
+
+
+  </style>
+</head>
+<body>
+  <div class="cart_section">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-10 offset-lg-1">
+              <!-- <form class="pay-form"> -->
+                <div class="cart_container">
+                    <div class="cart_title">Shopping Bag</div>
+                    <div class="cart_items">
+                        <ul class="cart_list">
+                          <% carts.forEach(function(cart){%>
+                            <li class="cart_item clearfix">
+                                <div class="cart_item_image"><img src="https://cdn.cookielaw.org/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png" alt=""></div>
+                                <div class="cart_item_info d-flex flex-md-row flex-column justify-content-between">
+                                    <div class="cart_item_name cart_info_col">
+                                        <div class="cart_item_title">Name</div>
+                                        <span class="cart_item_text" id="product_name"><%= cart.product_name %></span>
+                                    </div>
+                                    <div class="cart_item_name cart_info_col ">
+                                      <div class="cart_item_title">Quantity</div>
+                                      <button class="btn btn-link px-2 quantity-minus"
+                                        onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+                                       
+                                      </button>
+                                      <input min="0" name="quantity" value="1" type="number" class="form-control quantity" onchange="updateCartItemTotal(event)">
+                                      
+                                        <input type="hidden" 
+                                        data-id<%-cart.id%>
+                                        data-price<%-cart.price%>
+                                        data-qty<%-cart.product_quantity%> >
+                                  
+                                      <button class="btn btn-link px-2 quantity-plus"
+                                        onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
+                                       
+                                      </button>
+                                    </div>
+                                    <div class="cart_item_price cart_info_col">
+                                        <div class="cart_item_title">Price</div>
+                                        <span class="cart_item_text item-in-cart-cost">₹<%=cart.price%></span>
+                                    </div>
+                                    <div class="cart_item_total cart_info_col">
+                                      <div class="cart_item_title">Total</div>
+                                      <span class="cart_item_text item-in-cart-cost qty_total_price">₹<%= cart.price %></span>
+                                      </div>
+                                      <div class="cart_item_total cart_info_col">
+                                          <a href="/delete-prod/<%= cart.id%>" class="text-dark class cart_item_text"><i class="fa fa-trash"></i></a>
+                                      </div>
+                                </div>
+                              </li>
+                              <%})%>
+                            </ul>
+                          </div>
+                          <div class="order_total">
+                            <div class="order_total_content text-md-right">
+                              <div class="order_total_title ">Order Total:</div>
+                              <div class="order_total_amount final-total-price">₹00</div>
+                            </div>
+                          </div>
+                          <div >
+                            <div class="checkout_btn text-md-right">
+                            <a type="button" class="button cart_button_clear" href="/">Continue Shopping</a>
+                            <button type="submit" class="button cart_button_checkout recurring_checkout">Recurring Checkout</button>
+                            <button type="submit" class="button cart_button_checkout One_Time_checkout">One-Time Checkout</button>
+                      </div>
+                    </div>
+                </div>
+              <!-- </form> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+var orderId ;
+  $(document).ready(function () {
+        let finalTotal = 0;
+        let quantity = 0;
+        $('.cart_item').each(function () {
+            let quantity = $(this).find('.quantity').val() ? $(this).find('.quantity').val() : 1;
+            let price = $(this).find('.item-in-cart-cost').text();
+            price = parseFloat(price.replace('₹', '')); 
+            
+            let total = quantity * price;
+            finalTotal += total;
+        });
+
+        finalTotal = finalTotal.toFixed(2); 
+        $('.final-total-price').text('₹' + finalTotal);
+
+        function updateTotals() {
+          let finalTotalPrice = 0
+          // let finalTotal = 0;
+          $('.cart_item').each(function () {
+            let quantity = $(this).find('.quantity').val() ? parseInt($(this).find('.quantity').val()) : 1;
+            let price = parseFloat($(this).find('.item-in-cart-cost').text().replace('₹', ''));
+            
+            let total = quantity * price;
+            finalTotalPrice += total;
+            
+            $(this).find('.qty_total_price').text('₹' + total.toFixed(2));
+          });
+          finalTotalPrice = finalTotalPrice;
+          $('.final-total-price').text('₹' + finalTotalPrice);
+        }    
+        // const totalPrice = finalTotalPrice
+        
+        $('.quantity').on('change', function () {
+          let quantity = $(this).val();
+          let price = $(this).closest('.cart_item_info').find('.item-in-cart-cost').text();
+          price = parseFloat(price.replace('₹', '')); 
+          
+          let total = quantity * price;
+          total = total.toFixed(2); 
+          
+          $(this).closest('.cart_item_info').find('.qty_total_price').text('₹' + total);
+          updateTotals();
+        });
+        
+        updateTotals();
+       
+          // stripe payment
+          // let Total = $(this).find('.final-total-price').text();
+          // debugger
+          // let total_price = 0
+          // let final_Total = $(this).find('.final-total-price').text();
+          // price = parseFloat(final_Total.replace('₹', '')); 
+          // let numericValue = final_Total.replace(/[^\d.-]/g, '');
+          debugger
+          let product = $(this).find('#product_name')
+          $(".One_Time_checkout").click(function () {
+            $.ajax({
+              async: false,
+              method: 'post',
+              url: '/paymet-starip',
+              data: {
+                total_price: finalTotal,
+                productName: product[0].innerText
+              },
+              
+              success: function (data) {
+               
+                window.open(data)
+              }
+            })
+
+          });
+
+         
+          console.log(product);
+          $(".recurring_checkout").click(function () {
+            $.ajax({
+              async: false,
+              method: 'post',
+              url: '/create-checkout-session',
+              data: {
+                productName: product[0].innerText
+              },
+              
+              success: function (data) {
+                window.open(data)
+              }
+            })
+
+          });
+        });
+        
+      </script>
+</body>
+</html>
